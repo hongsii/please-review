@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import please.review.core.domain.channel.entity.Channel
 import please.review.core.domain.channel.entity.ChannelType
+import please.review.core.domain.channel.entity.GithubRepo
 
 @DataJpaTest
 @ExtendWith(SpringExtension::class)
@@ -28,6 +29,21 @@ internal class ChannelRepositoryTest(
         assertThat(channelRepository.findAll())
             .hasSize(1)
             .first().hasNoNullFieldsOrProperties().isEqualTo(saved)
+    }
+
+    @Test
+    fun insertWithRelation() {
+        val new = Channel(
+            type = ChannelType.TALK,
+            externalId = "1"
+        )
+        new.addRepo(GithubRepo(owner = "dog", name = "cat"))
+
+        val saved = channelRepository.save(new)
+
+        assertThat(channelRepository.findAll()).hasSize(1)
+            .first()
+            .hasNoNullFieldsOrProperties().isEqualTo(saved)
     }
 
     @Test
