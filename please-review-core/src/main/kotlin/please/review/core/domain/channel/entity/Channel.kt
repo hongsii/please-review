@@ -4,6 +4,12 @@ import please.review.core.domain.BaseEntity
 import javax.persistence.*
 
 @Entity
+// FIXME: 컬럼명 에러 해결
+//@Table(
+//    uniqueConstraints = [
+//        UniqueConstraint(name = "UQ_type_external_id", columnNames = ["type", "externalId"])
+//    ]
+//)
 data class Channel(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

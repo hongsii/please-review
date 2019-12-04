@@ -1,0 +1,18 @@
+spring:
+  profiles: local, default
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:mem:please_review
+      driver-class-name: org.h2.Driver
+      username: please-review
+      password: pr1234
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+

@@ -16,5 +16,6 @@ data class GithubRepo(
     val name: String,
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], optional = false)
+    @JoinColumn(nullable = false, foreignKey = ForeignKey(name = "FK_channel_id"))
     var channel: Channel? = null
 ) : BaseEntity()
