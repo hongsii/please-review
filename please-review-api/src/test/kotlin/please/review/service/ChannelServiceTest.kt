@@ -7,9 +7,9 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
-import please.review.core.domain.channel.entity.Channel
-import please.review.core.domain.channel.entity.ChannelType
-import please.review.core.domain.channel.repository.ChannelRepository
+import please.review.core.channel.domain.Channel
+import please.review.core.channel.domain.ChannelType
+import please.review.core.channel.repository.ChannelRepository
 import please.review.exception.AlreadyRegisteredChannel
 
 @ExtendWith(MockitoExtension::class)
@@ -38,7 +38,12 @@ internal class ChannelServiceTest {
         val externalId = "1"
 
         `when`(channelRepository.findByTypeAndExternalId(channelType, externalId))
-            .thenReturn(Channel(type = channelType, externalId = externalId))
+            .thenReturn(
+                Channel(
+                    type = channelType,
+                    externalId = externalId
+                )
+            )
 
         assertThatThrownBy { channelService.register(channelType, externalId) }
             .isExactlyInstanceOf(AlreadyRegisteredChannel::class.java)

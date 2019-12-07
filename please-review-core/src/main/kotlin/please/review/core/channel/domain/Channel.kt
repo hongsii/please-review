@@ -1,6 +1,6 @@
-package please.review.core.domain.channel.entity
+package please.review.core.channel.domain
 
-import please.review.core.domain.BaseEntity
+import please.review.core.common.domain.BaseEntity
 import javax.persistence.*
 
 @Entity
