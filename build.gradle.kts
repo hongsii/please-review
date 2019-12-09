@@ -21,6 +21,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "kotlin")
+    apply(plugin = "kotlin-kapt")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
     apply(plugin = "org.springframework.boot")
     apply(plugin = "io.spring.dependency-management")
@@ -30,6 +31,8 @@ subprojects {
         implementation(kotlin("stdlib-jdk8"))
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
         implementation("org.springframework.boot:spring-boot-starter-logging")
+        kapt("org.springframework.boot:spring-boot-configuration-processor")
+        compileOnly("org.springframework.boot:spring-boot-configuration-processor")
         testImplementation("org.springframework.boot:spring-boot-starter-test") {
             exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         }
@@ -39,10 +42,13 @@ subprojects {
         useJUnitPlatform()
     }
 
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "1.8"
+    tasks {
+        withType<KotlinCompile> {
+            kotlinOptions {
+                freeCompilerArgs = listOf("-Xjsr305=strict")
+                jvmTarget = "1.8"
+            }
+            dependsOn(processResources)
         }
     }
 }
