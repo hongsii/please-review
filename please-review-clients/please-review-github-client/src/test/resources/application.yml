@@ -1,3 +1,3 @@
 github:
-  base-url: https://github.com
+  base-url: https://api.github.com
   access-token: token

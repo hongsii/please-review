@@ -16,38 +16,29 @@ class GithubClient(
     private val restTemplate: RestTemplate
 ) : InitializingBean {
 
-    /**
-     * Repository 조회
-     */
-    fun getRepository(owner: String, name: String, type: String = "all"): Repository {
-        val httpEntity = HttpHeaders()
-            .apply { add("Authorization", "Bearer $accessToken") }
-            .let { HttpEntity<Any>(it) }
+    private lateinit var defaultHttpEntity: HttpEntity<Any>
 
-        val response = restTemplate.exchange<Repository>(
-            "$baseUrl/api/v3/repos/$owner/$name?type=$type",
-            HttpMethod.GET,
-            httpEntity
-        )
-        return response.body!!
-    }
+    fun getRepository(owner: String, name: String, type: String = "all") =
+        get<Repository>("/repos/$owner/$name?type=$type")
+            .run { body!! }
 
-    fun getPullRequests(owner: String, repo: String, state: String? = "all"): List<PullRequest> {
-        val httpEntity = HttpHeaders()
-            .apply { add("Authorization", "Bearer $accessToken") }
-            .let { HttpEntity<Any>(it) }
+    fun getPullRequests(owner: String, name: String, state: String = "all") =
+        get<List<PullRequest>>("/repos/$owner/$name/pulls?state=$state")
+            .run { body ?: emptyList() }
 
-        val response = restTemplate.exchange<List<PullRequest>>(
-            "$baseUrl/api/v3/repos/$owner/$repo/pulls?state=$state",
-            HttpMethod.GET,
-            httpEntity
-        )
-        return response.body ?: emptyList()
-    }
+    private inline fun <reified T> get(path: String) =
+        restTemplate.exchange<T>("$baseUrl$${appendPrefixSlash(path)}", HttpMethod.GET, defaultHttpEntity)
+
+    private fun appendPrefixSlash(url: String) = if (url.startsWith("/")) url else "/$url"
 
     override fun afterPropertiesSet() {
-        log.info("Initializing github client with access token : $accessToken")
+        log.info("Initializing github client with properties -> baseUrl: $baseUrl, accessToken : $accessToken")
+        defaultHttpEntity = initializeHttpEntityWithAccessToken()
     }
+
+    private fun initializeHttpEntityWithAccessToken() = HttpHeaders()
+        .apply { add("Authorization", "Bearer $accessToken") }
+        .let { HttpEntity<Any>(it) }
 
     companion object {
         val log = logger()
