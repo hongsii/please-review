@@ -16,6 +16,7 @@ import org.springframework.test.web.client.response.MockRestResponseCreators.wit
 import org.springframework.web.client.RestTemplate
 import please.review.client.github.model.PullRequest
 import please.review.client.github.model.PullRequestState
+import please.review.client.github.model.Repository
 import please.review.client.github.model.User
 import java.time.LocalDateTime
 
@@ -36,6 +37,41 @@ internal class GithubClientTest {
     @BeforeEach
     internal fun setUp() {
         mockServer = MockRestServiceServer.createServer(restTemplate)
+    }
+
+    @Test
+    fun `소유자의 저장소를 조회한다`() {
+        val owner = "red"
+        val name = "please-review"
+        val type = "all"
+        mockServer.expect(requestTo("https://github.com/api/v3/repos/$owner/$name?type=all"))
+            .andRespond(
+                withSuccess(ClassPathResource("/json/repo.json", javaClass), MediaType.APPLICATION_JSON)
+            )
+
+        val repository = githubClient.getRepository(owner, name, type)
+
+        assertThat(repository).isEqualTo(
+            Repository(
+                id = 1296269,
+                url = "https://api.github.com/repos/octocat/Hello-World",
+                owner = User(
+                    login = "octocat",
+                    id = 1,
+                    type = "User",
+                    email = "",
+                    avatarUrl = "https://github.com/images/error/octocat_happy.gif"
+                ),
+                name = "Hello-World",
+                fullName = "octocat/Hello-World",
+                private = false,
+                description = "This your first repo!",
+                fork = false,
+                createdAt = LocalDateTime.of(2011, 1, 26, 19, 1, 12),
+                updatedAt = LocalDateTime.of(2011, 1, 26, 19, 14, 43),
+                pushedAt = LocalDateTime.of(2011, 1, 26, 19, 6, 43)
+            )
+        )
     }
 
     @Test

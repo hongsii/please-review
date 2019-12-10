@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
 import please.review.client.github.model.PullRequest
+import please.review.client.github.model.Repository
 import please.review.common.extensions.logger
 
 class GithubClient(
@@ -14,6 +15,22 @@ class GithubClient(
     private val accessToken: String,
     private val restTemplate: RestTemplate
 ) : InitializingBean {
+
+    /**
+     * Repository 조회
+     */
+    fun getRepository(owner: String, name: String, type: String = "all"): Repository {
+        val httpEntity = HttpHeaders()
+            .apply { add("Authorization", "Bearer $accessToken") }
+            .let { HttpEntity<Any>(it) }
+
+        val response = restTemplate.exchange<Repository>(
+            "$baseUrl/api/v3/repos/$owner/$name?type=$type",
+            HttpMethod.GET,
+            httpEntity
+        )
+        return response.body!!
+    }
 
     fun getPullRequests(owner: String, repo: String, state: String? = "all"): List<PullRequest> {
         val httpEntity = HttpHeaders()
