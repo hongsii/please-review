@@ -48,4 +48,8 @@ internal class ChannelServiceTest {
         assertThatThrownBy { channelService.register(channelType, externalId) }
             .isExactlyInstanceOf(AlreadyRegisteredChannel::class.java)
     }
+
+    @Test
+    fun `존재하는 저장소이면 채널에 등록할 수 있다`() {
+    }
 }

@@ -1,5 +1,6 @@
 package please.review.core.channel.domain
 
+import please.review.core.channel.exception.AlreadyAddedGithubRepo
 import please.review.core.common.domain.BaseEntity
 import javax.persistence.*
 
@@ -23,14 +24,21 @@ data class Channel(
     val externalId: String
 ) : BaseEntity() {
 
-    @OneToMany(
-        mappedBy = "channel", fetch = FetchType.LAZY,
-        cascade = [CascadeType.ALL], orphanRemoval = true
-    )
-    val githubRepos: MutableSet<GithubRepo> = mutableSetOf()
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    private val githubRepos: MutableList<GithubRepo> = mutableListOf()
 
-    fun addRepo(githubRepo: GithubRepo) {
+    constructor(type: ChannelType, externalId: String, githubRepos: List<GithubRepo>)
+            : this(type = type, externalId = externalId) {
+        this.githubRepos.addAll(githubRepos)
+    }
+
+    fun addGithubRepo(githubRepo: GithubRepo) {
+        if (githubRepos.contains(githubRepo)) {
+            throw AlreadyAddedGithubRepo(githubRepo)
+        }
         githubRepos.add(githubRepo)
         githubRepo.channel = this
     }
+
+    fun getGithubRepos() = githubRepos.toList()
 }
