@@ -1,6 +1,6 @@
 package please.review.service
 
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -9,8 +9,9 @@ import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import please.review.core.channel.domain.Channel
 import please.review.core.channel.domain.ChannelType
+import please.review.core.channel.domain.GithubRepo
 import please.review.core.channel.repository.ChannelRepository
-import please.review.exception.AlreadyRegisteredChannel
+import please.review.service.dto.ChannelGithubRepo
 
 @ExtendWith(MockitoExtension::class)
 internal class ChannelServiceTest {
@@ -22,30 +23,30 @@ internal class ChannelServiceTest {
     private lateinit var channelRepository: ChannelRepository
 
     @Test
-    fun `미등록 채널이면 저장할 수 있다`() {
-        val channelType = ChannelType.TALK
-        val externalId = "1"
-
-        `when`(channelRepository.findByTypeAndExternalId(channelType, externalId))
-            .thenReturn(null)
-
-        channelService.register(channelType, externalId)
+    fun `등로된 채널이 있으면 해당 채널에 저장소를 추가한다`() {
+        assertToAddGithubRepo(Channel(type = ChannelType.TALK, externalId = "11"))
     }
 
     @Test
-    fun `이미 등록된 채널이면 저장할 수 없다`() {
-        val channelType = ChannelType.TALK
-        val externalId = "1"
+    fun `등록된 채널이 없으면 신규 채널을 생성해 저장소를 추가한다`() {
+        assertToAddGithubRepo(null)
+    }
 
-        `when`(channelRepository.findByTypeAndExternalId(channelType, externalId))
-            .thenReturn(
-                Channel(
-                    type = channelType,
-                    externalId = externalId
-                )
-            )
+    private fun assertToAddGithubRepo(channel: Channel?) {
+        val channelGithubRepo = ChannelGithubRepo(
+            channelType = channel?.type ?: ChannelType.TALK,
+            externalId = channel?.externalId ?: "1",
+            fullNameOfRepo = "red/please-review"
+        )
 
-        assertThatThrownBy { channelService.register(channelType, externalId) }
-            .isExactlyInstanceOf(AlreadyRegisteredChannel::class.java)
+        `when`(channelRepository.findByTypeAndExternalId(channelGithubRepo.channelType, channelGithubRepo.externalId))
+            .thenReturn(channel)
+        val actual = channelService.addGithubRepo(channelGithubRepo)
+
+        assertThat(actual.type).isEqualTo(channelGithubRepo.channelType)
+        assertThat(actual.externalId).isEqualTo(channelGithubRepo.externalId)
+        assertThat(actual.getGithubRepos())
+            .hasSize(1)
+            .containsExactly(GithubRepo(owner = "red", name = "please-review", channel = actual))
     }
 }

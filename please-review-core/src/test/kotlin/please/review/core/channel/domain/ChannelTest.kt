@@ -11,11 +11,11 @@ internal class ChannelTest {
             type = ChannelType.TALK,
             externalId = "1"
         )
-        val githubRepo = GithubRepo(owner = "cat", name = "dog")
+        val githubRepo = GithubRepo(owner = "cat", name = "dog", channel = channel)
 
         channel.addRepo(githubRepo)
 
-        assertThat(channel.githubRepos)
+        assertThat(channel.getGithubRepos())
             .hasSize(1)
             .first().isEqualTo(githubRepo)
         assertThat(githubRepo.channel).isEqualTo(channel)

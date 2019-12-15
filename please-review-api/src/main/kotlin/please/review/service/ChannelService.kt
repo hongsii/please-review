@@ -1,22 +1,27 @@
 package please.review.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import please.review.core.channel.domain.Channel
-import please.review.core.channel.domain.ChannelType
+import please.review.core.channel.domain.GithubRepo
 import please.review.core.channel.repository.ChannelRepository
-import please.review.exception.AlreadyRegisteredChannel
+import please.review.service.dto.ChannelGithubRepo
 
 @Service
 class ChannelService(
     private val channelRepository: ChannelRepository
 ) {
 
-    fun register(channelType: ChannelType, externalId: String) {
-        channelRepository.findByTypeAndExternalId(channelType, externalId)
-            ?.let { throw AlreadyRegisteredChannel() }
-
-        val newChannel =
-            Channel(type = channelType, externalId = externalId)
-        channelRepository.save(newChannel)
-    }
+    @Transactional
+    fun addGithubRepo(channelGithubRepo: ChannelGithubRepo): Channel =
+        channelGithubRepo
+            .run {
+                channelRepository.findByTypeAndExternalId(channelType, externalId)
+                    ?: Channel(type = channelType, externalId = externalId)
+            }
+            .apply {
+                val githubRepo = GithubRepo.from(channelGithubRepo.fullNameOfRepo, this)
+                addRepo(githubRepo)
+                channelRepository.save(this)
+            }
 }

@@ -23,14 +23,12 @@ data class Channel(
     val externalId: String
 ) : BaseEntity() {
 
-    @OneToMany(
-        mappedBy = "channel", fetch = FetchType.LAZY,
-        cascade = [CascadeType.ALL], orphanRemoval = true
-    )
-    val githubRepos: MutableSet<GithubRepo> = mutableSetOf()
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    private val githubRepos: MutableSet<GithubRepo> = mutableSetOf()
 
     fun addRepo(githubRepo: GithubRepo) {
         githubRepos.add(githubRepo)
-        githubRepo.channel = this
     }
+
+    fun getGithubRepos() = githubRepos.toList()
 }

@@ -37,7 +37,7 @@ internal class ChannelRepositoryTest(
             type = ChannelType.TALK,
             externalId = "1"
         )
-        new.addRepo(GithubRepo(owner = "dog", name = "cat"))
+        new.addRepo(GithubRepo(owner = "dog", name = "cat", channel = new))
 
         val saved = channelRepository.save(new)
 
