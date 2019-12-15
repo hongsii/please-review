@@ -1,11 +1,11 @@
-package please.review.service
+package please.review.channel.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import please.review.channel.service.dto.ChannelGithubRepo
 import please.review.core.channel.domain.Channel
 import please.review.core.channel.domain.GithubRepo
 import please.review.core.channel.repository.ChannelRepository
-import please.review.service.dto.ChannelGithubRepo
 
 @Service
 class ChannelService(

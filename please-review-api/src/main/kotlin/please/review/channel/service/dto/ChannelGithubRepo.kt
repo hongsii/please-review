@@ -1,4 +1,4 @@
-package please.review.service.dto
+package please.review.channel.service.dto
 
 import please.review.core.channel.domain.ChannelType
 

@@ -1,4 +1,4 @@
-package please.review.service
+package please.review.channel
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -7,11 +7,12 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
+import please.review.channel.service.ChannelService
+import please.review.channel.service.dto.ChannelGithubRepo
 import please.review.core.channel.domain.Channel
 import please.review.core.channel.domain.ChannelType
 import please.review.core.channel.domain.GithubRepo
 import please.review.core.channel.repository.ChannelRepository
-import please.review.service.dto.ChannelGithubRepo
 
 @ExtendWith(MockitoExtension::class)
 internal class ChannelServiceTest {
