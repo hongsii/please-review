@@ -1,8 +1,8 @@
 package please.review.client.github
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -12,8 +12,8 @@ import please.review.client.github.extensions.jackson.objectMapper
 
 @Configuration
 @EnableConfigurationProperties(GithubClientProperties::class)
+@ConditionalOnBean(GithubClientProperties::class)
 @ConditionalOnClass(GithubClient::class)
-@ConditionalOnProperty(prefix = "github", name = ["base-url", "access-token"])
 class GithubClientAutoConfiguration {
 
     @Bean
