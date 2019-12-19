@@ -1,4 +1,4 @@
-package please.review.channel
+package please.review.channel.service
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -7,7 +7,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
-import please.review.channel.service.ChannelService
 import please.review.channel.service.dto.ChannelGithubRepo
 import please.review.core.channel.domain.Channel
 import please.review.core.channel.domain.ChannelType
