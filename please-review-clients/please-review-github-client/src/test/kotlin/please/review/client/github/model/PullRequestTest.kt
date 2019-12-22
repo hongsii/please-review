@@ -3,7 +3,10 @@ package please.review.client.github.model
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import please.review.client.github.extensions.jackson.objectMapper
+import java.time.LocalDateTime
 
 internal class PullRequestTest {
 
@@ -96,5 +99,28 @@ internal class PullRequestTest {
 
         assertThat(actual).isNotNull
         assertThat(actual).hasNoNullFieldsOrProperties().isNotNull
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "red , true",
+        "none , false"
+    )
+    fun `특정 사용자에게 리뷰 요청된 PR인지 확인할 수 있다`(userName: String, expected: Boolean) {
+        val pullRequest = PullRequest(
+            url = "https://octocoders.github.io/api/v3/repos/Codertocat/Hello-World/pulls/2",
+            id = 1,
+            state = PullRequestState.OPEN,
+            title = "첫 PR",
+            body = "머지해주세요",
+            requestedReviewers = listOf(
+                User(login = "red", id = 1, type = "User"),
+                User(login = "bean", id = 2, type = "User")
+            ),
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now()
+        )
+
+        assertThat(pullRequest.isReviewer(userName)).isEqualTo(expected)
     }
 }

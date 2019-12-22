@@ -12,4 +12,7 @@ data class PullRequest(
     val requestedReviewers: List<User> = emptyList(),
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
-)
+) {
+
+    fun isReviewer(userName: String) = requestedReviewers.any { it.login == userName }
+}
