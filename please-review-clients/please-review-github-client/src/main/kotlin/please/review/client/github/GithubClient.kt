@@ -27,7 +27,7 @@ class GithubClient(
             .run { body ?: emptyList() }
 
     private inline fun <reified T> get(path: String) =
-        restTemplate.exchange<T>("$baseUrl$${appendPrefixSlash(path)}", HttpMethod.GET, defaultHttpEntity)
+        restTemplate.exchange<T>("$baseUrl${appendPrefixSlash(path)}", HttpMethod.GET, defaultHttpEntity)
 
     private fun appendPrefixSlash(url: String) = if (url.startsWith("/")) url else "/$url"
 
