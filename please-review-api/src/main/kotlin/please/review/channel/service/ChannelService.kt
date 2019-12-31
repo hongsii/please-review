@@ -2,8 +2,10 @@ package please.review.channel.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import please.review.channel.exception.ChannelNotFoundException
 import please.review.channel.service.dto.ChannelGithubRepo
 import please.review.core.channel.domain.Channel
+import please.review.core.channel.domain.ChannelType
 import please.review.core.channel.domain.GithubRepo
 import please.review.core.channel.repository.ChannelRepository
 
@@ -24,4 +26,9 @@ class ChannelService(
                 addRepo(githubRepo)
                 channelRepository.save(this)
             }
+
+    @Transactional(readOnly = true)
+    fun getChannel(channelType: ChannelType, externalId: String) =
+        channelRepository.findByTypeAndExternalId(channelType, externalId)
+            ?: throw ChannelNotFoundException()
 }
