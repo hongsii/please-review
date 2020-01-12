@@ -1,6 +1,7 @@
 package please.review.core.channel.domain
 
 import please.review.core.common.domain.BaseEntity
+import please.review.core.exception.DuplicatedGithubRepoException
 import javax.persistence.*
 
 @Entity
@@ -26,9 +27,11 @@ data class Channel(
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     private val githubRepos: MutableSet<GithubRepo> = mutableSetOf()
 
-    fun addRepo(githubRepo: GithubRepo) {
-        githubRepos.add(githubRepo)
-    }
+    fun addRepo(githubRepo: GithubRepo) = githubRepos.add(
+        githubRepo
+            .takeIf { githubRepos.none { it.isEqualTo(githubRepo) } }
+            ?: throw DuplicatedGithubRepoException()
+    )
 
     fun getGithubRepos() = githubRepos.toList()
 }
