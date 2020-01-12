@@ -11,6 +11,7 @@ import please.review.channel.service.dto.ChannelGithubRepo
 import please.review.core.channel.domain.Channel
 import please.review.core.channel.domain.ChannelType
 import please.review.core.channel.domain.GithubRepo
+import please.review.core.channel.domain.GithubRepoFullName
 import please.review.core.channel.repository.ChannelRepository
 
 @ExtendWith(MockitoExtension::class)
@@ -47,6 +48,6 @@ internal class ChannelServiceTest {
         assertThat(actual.externalId).isEqualTo(channelGithubRepo.externalId)
         assertThat(actual.getGithubRepos())
             .hasSize(1)
-            .containsExactly(GithubRepo(owner = "red", name = "please-review", channel = actual))
+            .containsExactly(GithubRepo(fullName = GithubRepoFullName("red", "please-review"), channel = actual))
     }
 }

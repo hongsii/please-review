@@ -9,6 +9,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import please.review.core.channel.domain.Channel
 import please.review.core.channel.domain.ChannelType
 import please.review.core.channel.domain.GithubRepo
+import please.review.core.channel.domain.GithubRepoFullName
 
 @DataJpaTest
 @ExtendWith(SpringExtension::class)
@@ -37,7 +38,7 @@ internal class ChannelRepositoryTest(
             type = ChannelType.TALK,
             externalId = "1"
         )
-        new.addRepo(GithubRepo(owner = "dog", name = "cat", channel = new))
+        new.addRepo(GithubRepo(fullName = GithubRepoFullName("owner", "name"), channel = new))
 
         val saved = channelRepository.save(new)
 

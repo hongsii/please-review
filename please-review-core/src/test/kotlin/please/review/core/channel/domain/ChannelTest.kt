@@ -13,7 +13,7 @@ internal class ChannelTest {
             type = ChannelType.TALK,
             externalId = "1"
         )
-        val githubRepo = GithubRepo(owner = "cat", name = "dog", channel = channel)
+        val githubRepo = GithubRepo(fullName = GithubRepoFullName("owner", "name"), channel = channel)
 
         channel.addRepo(githubRepo)
 
@@ -29,11 +29,13 @@ internal class ChannelTest {
             type = ChannelType.TALK,
             externalId = "1"
         )
-        val owner = "cat"
-        val name = "dog"
-        channel.addRepo(GithubRepo(id = 1, owner = owner, name = name, channel = channel))
+        val owner = "owner"
+        val name = "name"
+        channel.addRepo(GithubRepo(id = 1, fullName = GithubRepoFullName(owner, name), channel = channel))
 
-        assertThatThrownBy { channel.addRepo(GithubRepo(owner = owner, name = name, channel = channel)) }
+        assertThatThrownBy {
+            channel.addRepo(GithubRepo(fullName = GithubRepoFullName(owner, name), channel = channel))
+        }
             .isExactlyInstanceOf(DuplicatedGithubRepoException::class.java)
     }
 }

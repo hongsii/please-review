@@ -17,10 +17,12 @@ class ChannelPullRequestService(
 
         return channel.getGithubRepos()
             .map {
-                val requestedPullRequests = pullRequestService.getRequestedReviewToUser(
-                    it.owner, it.name, channelUser.githubUserName
-                )
-                RepoPullRequest(it.owner, it.name, requestedPullRequests)
+                it.fullName.run {
+                    val requestedPullRequests = pullRequestService.getRequestedReviewToUser(
+                        owner, name, channelUser.githubUserName
+                    )
+                    RepoPullRequest(owner, name, requestedPullRequests)
+                }
             }
             .let { Review(channelUser, it) }
     }

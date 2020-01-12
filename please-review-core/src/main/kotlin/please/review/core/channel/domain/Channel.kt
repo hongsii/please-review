@@ -28,7 +28,7 @@ data class Channel(
 
     fun addRepo(githubRepo: GithubRepo) = githubRepos.add(
         githubRepo
-            .takeIf { githubRepos.none { it.isEqualTo(githubRepo) } }
+            .takeIf { githubRepos.none { it.isSameFullName(githubRepo) } }
             ?: throw DuplicatedGithubRepoException()
     )
 

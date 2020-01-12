@@ -18,6 +18,7 @@ import please.review.client.github.model.User
 import please.review.core.channel.domain.Channel
 import please.review.core.channel.domain.ChannelType
 import please.review.core.channel.domain.GithubRepo
+import please.review.core.channel.domain.GithubRepoFullName
 import please.review.github.service.PullRequestService
 import java.time.LocalDateTime
 
@@ -38,7 +39,7 @@ internal class ChannelPullRequestServiceTest {
         val channelUser = ChannelUser(ChannelType.TALK, "1", "bean")
 
         val channel = Channel(1, channelUser.channelType, channelUser.externalId)
-            .apply { addRepo(GithubRepo(1, "red", "please-review", this)) }
+            .apply { addRepo(GithubRepo(1, GithubRepoFullName("red", "please-review"), this)) }
         given(channelService.getChannel(channelUser.channelType, channelUser.externalId))
             .willReturn(channel)
 
