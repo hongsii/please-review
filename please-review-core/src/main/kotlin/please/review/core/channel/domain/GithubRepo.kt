@@ -21,6 +21,8 @@ data class GithubRepo(
     val channel: Channel
 ) : BaseEntity() {
 
+    fun isEqualTo(other: GithubRepo) = this.owner == other.owner && this.name == other.name
+
     companion object {
 
         private const val FULL_NAME_SEPARATOR = "/"

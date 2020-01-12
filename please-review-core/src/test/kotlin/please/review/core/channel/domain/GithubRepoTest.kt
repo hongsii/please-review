@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.EmptySource
 import org.junit.jupiter.params.provider.ValueSource
 import please.review.core.exception.InvalidGithubRepoFullNameException
@@ -34,5 +35,22 @@ internal class GithubRepoTest {
             GithubRepo.from(invalidRepoName, Channel(type = ChannelType.TALK, externalId = "1"))
         }
             .isExactlyInstanceOf(InvalidGithubRepoFullNameException::class.java)
+    }
+
+
+    @ParameterizedTest
+    @CsvSource(
+        "owner1 , name1 , true",
+        "owner1 , name2 , false",
+        "owner2 , name1 , false",
+        "owner2 , name2 , false"
+    )
+    fun `소유자와 저장소명이 동일하면 같은 저장소다`(owner: String, name: String, expected: Boolean) {
+        val channel = Channel(type = ChannelType.TALK, externalId = "1")
+        val repo = GithubRepo(owner = "owner1", name = "name1", channel = channel)
+
+        val actual = repo.isEqualTo(GithubRepo(owner = owner, name = name, channel = channel))
+
+        assertThat(actual).isEqualTo(expected)
     }
 }
