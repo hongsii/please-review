@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EmptySource
 import org.junit.jupiter.params.provider.ValueSource
+import please.review.core.exception.InvalidGithubRepoFullNameException
 
 internal class GithubRepoTest {
 
@@ -32,6 +33,6 @@ internal class GithubRepoTest {
         assertThatThrownBy {
             GithubRepo.from(invalidRepoName, Channel(type = ChannelType.TALK, externalId = "1"))
         }
-            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .isExactlyInstanceOf(InvalidGithubRepoFullNameException::class.java)
     }
 }

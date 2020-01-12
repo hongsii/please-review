@@ -1,6 +1,7 @@
 package please.review.core.channel.domain
 
 import please.review.core.common.domain.BaseEntity
+import please.review.core.exception.InvalidGithubRepoFullNameException
 import javax.persistence.*
 
 @Entity
@@ -29,6 +30,6 @@ data class GithubRepo(
                 .filter(String::isNotBlank)
                 .takeIf { it.size == 2 }
                 ?.let { GithubRepo(owner = it[0], name = it[1], channel = channel) }
-                ?: throw IllegalArgumentException("잘못된 저장소입니다. 유효한 형식 : 소유자${FULL_NAME_SEPARATOR}저장소명")
+                ?: throw InvalidGithubRepoFullNameException(FULL_NAME_SEPARATOR)
     }
 }
